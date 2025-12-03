@@ -1,0 +1,1409 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lucky Slots - Элитное Казино</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        body {
+            background: #000;
+            color: #fff;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+        
+        /* Анимированный фон */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(255, 215, 0, 0.05) 0%, transparent 20%),
+                radial-gradient(circle at 80% 70%, rgba(255, 0, 0, 0.05) 0%, transparent 20%),
+                radial-gradient(circle at 40% 80%, rgba(0, 255, 0, 0.05) 0%, transparent 20%);
+            z-index: -1;
+            animation: pulse 15s infinite alternate;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 0.2; }
+            100% { opacity: 0.5; }
+        }
+        
+        /* Общие стили для экранов */
+        .screen {
+            display: none;
+            width: 100%;
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+            opacity: 0;
+            animation: fadeIn 0.5s forwards;
+        }
+        
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+        
+        .active {
+            display: block;
+        }
+        
+        /* Главное меню */
+        #main-menu {
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+        }
+        
+        .logo {
+            text-align: center;
+            margin: 100px 0 60px;
+            animation: glow 3s infinite alternate;
+        }
+        
+        @keyframes glow {
+            from { text-shadow: 0 0 10px gold; }
+            to { text-shadow: 0 0 40px gold, 0 0 60px orange; }
+        }
+        
+        .logo h1 {
+            font-size: 5rem;
+            color: gold;
+            letter-spacing: 5px;
+            margin-bottom: 10px;
+            font-weight: 900;
+        }
+        
+        .logo p {
+            font-size: 1.3rem;
+            color: #aaa;
+            letter-spacing: 2px;
+        }
+        
+        /* Баланс */
+        .balance {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.9);
+            padding: 15px 30px;
+            border-radius: 20px;
+            border: 3px solid gold;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            z-index: 1000;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+        }
+        
+        .balance-label {
+            color: gold;
+            font-size: 1.3rem;
+            font-weight: bold;
+        }
+        
+        .balance-amount {
+            font-size: 2rem;
+            font-weight: 900;
+            color: #fff;
+            text-shadow: 0 0 10px gold;
+        }
+        
+        /* Кнопки меню */
+        .menu-buttons {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 25px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        .menu-btn {
+            width: 100%;
+            padding: 28px;
+            font-size: 1.8rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        .menu-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+        
+        .menu-btn:hover::before {
+            width: 400px;
+            height: 400px;
+        }
+        
+        .play-btn {
+            background: linear-gradient(45deg, #ffd700, #ffaa00, #ffd700);
+            background-size: 200% 200%;
+            color: #000;
+            box-shadow: 0 15px 30px rgba(255, 215, 0, 0.5);
+            animation: gradientShift 3s infinite alternate;
+        }
+        
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
+        }
+        
+        .play-btn:hover {
+            transform: translateY(-8px) scale(1.05);
+            box-shadow: 0 20px 40px rgba(255, 215, 0, 0.8);
+        }
+        
+        .creator-btn {
+            background: linear-gradient(45deg, #4CAF50, #2E7D32);
+            color: white;
+            box-shadow: 0 15px 30px rgba(76, 175, 80, 0.5);
+        }
+        
+        .creator-btn:hover {
+            transform: translateY(-8px) scale(1.05);
+            box-shadow: 0 20px 40px rgba(76, 175, 80, 0.8);
+        }
+        
+        .add-money-btn {
+            background: linear-gradient(45deg, #2196F3, #0D47A1);
+            color: white;
+            box-shadow: 0 15px 30px rgba(33, 150, 243, 0.5);
+        }
+        
+        .add-money-btn:hover {
+            transform: translateY(-8px) scale(1.05);
+            box-shadow: 0 20px 40px rgba(33, 150, 243, 0.8);
+        }
+        
+        .history-main-btn {
+            background: linear-gradient(45deg, #ff3333, #990000, #ff3333);
+            background-size: 200% 200%;
+            color: white;
+            box-shadow: 0 15px 30px rgba(255, 0, 0, 0.5);
+            animation: pulseHistory 3s infinite alternate;
+        }
+        
+        .history-main-btn:hover {
+            transform: translateY(-8px) scale(1.05);
+            box-shadow: 0 20px 40px rgba(255, 0, 0, 0.8);
+            background-position: 100% 50%;
+        }
+        
+        @keyframes pulseHistory {
+            from { box-shadow: 0 15px 30px rgba(255, 0, 0, 0.5); }
+            to { box-shadow: 0 15px 45px rgba(255, 0, 0, 0.8); }
+        }
+        
+        /* Игровой экран */
+        #game-screen {
+            background: linear-gradient(135deg, #0a0a0a 0%, #151528 100%);
+        }
+        
+        .game-header {
+            text-align: center;
+            margin: 30px 0 40px;
+        }
+        
+        .game-title {
+            font-size: 3.2rem;
+            color: gold;
+            margin-bottom: 10px;
+            text-shadow: 0 0 15px rgba(255, 215, 0, 0.7);
+            letter-spacing: 3px;
+        }
+        
+        /* Игровой автомат */
+        .slot-machine {
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 30px;
+            padding: 50px;
+            border: 5px solid gold;
+            box-shadow: 
+                0 0 50px rgba(255, 215, 0, 0.4),
+                inset 0 0 50px rgba(0, 0, 0, 0.9);
+            max-width: 1000px;
+            margin: 0 auto 40px;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+        
+        .slot-machine::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: -20px;
+            right: -20px;
+            bottom: -20px;
+            background: linear-gradient(45deg, gold, orange, red, gold);
+            z-index: -1;
+            border-radius: 40px;
+            opacity: 0.1;
+            animation: borderGlow 4s infinite alternate;
+        }
+        
+        @keyframes borderGlow {
+            0% { opacity: 0.1; filter: hue-rotate(0deg); }
+            100% { opacity: 0.3; filter: hue-rotate(360deg); }
+        }
+        
+        .slots-container {
+            display: flex;
+            justify-content: center;
+            gap: 50px;
+            margin-bottom: 60px;
+            perspective: 1200px;
+        }
+        
+        .slot {
+            width: 200px;
+            height: 200px;
+            background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
+            border-radius: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 8rem;
+            font-weight: 900;
+            border: 6px solid #444;
+            box-shadow: 
+                inset 0 0 40px rgba(0, 0, 0, 1),
+                0 15px 30px rgba(0, 0, 0, 0.7);
+            transition: all 0.5s ease;
+            position: relative;
+            overflow: hidden;
+            transform-style: preserve-3d;
+        }
+        
+        .slot::before {
+            content: '';
+            position: absolute;
+            top: -100%;
+            left: -100%;
+            width: 300%;
+            height: 300%;
+            background: linear-gradient(
+                45deg,
+                transparent 30%,
+                rgba(255, 255, 255, 0.15) 50%,
+                transparent 70%
+            );
+            transform: rotate(45deg);
+            animation: shine 4s infinite;
+        }
+        
+        @keyframes shine {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+        
+        .slot.win {
+            border-color: gold;
+            box-shadow: 
+                0 0 50px gold,
+                inset 0 0 50px rgba(255, 215, 0, 0.4);
+            animation: winPulse 0.7s infinite alternate;
+        }
+        
+        @keyframes winPulse {
+            from { transform: scale(1) rotateY(0deg); }
+            to { transform: scale(1.08) rotateY(10deg); }
+        }
+        
+        /* Символы (ЭМОДЗИ) */
+        .symbol {
+            position: relative;
+            z-index: 2;
+            text-shadow: 0 5px 15px rgba(0, 0, 0, 0.8);
+            font-size: 7rem;
+        }
+        
+        .banana { 
+            color: #FFD700; 
+            text-shadow: 0 0 25px #FFD700, 0 0 40px #FFAA00;
+        }
+        
+        .apple { 
+            color: #FF3333; 
+            text-shadow: 0 0 25px #FF3333, 0 0 40px #CC0000;
+        }
+        
+        .pear { 
+            color: #33CC33; 
+            text-shadow: 0 0 25px #33CC33, 0 0 40px #009900;
+        }
+        
+        .seven { 
+            color: gold; 
+            text-shadow: 0 0 30px gold, 0 0 50px orange, 0 0 70px red;
+            animation: sevenGlow 1.5s infinite alternate;
+        }
+        
+        @keyframes sevenGlow {
+            from { 
+                text-shadow: 0 0 20px gold, 0 0 40px orange; 
+                transform: scale(1);
+            }
+            to { 
+                text-shadow: 0 0 40px gold, 0 0 80px orange, 0 0 100px red; 
+                transform: scale(1.1);
+            }
+        }
+        
+        /* Кнопка вращения */
+        .spin-section {
+            text-align: center;
+            margin-top: 40px;
+        }
+        
+        .spin-btn {
+            padding: 30px 100px;
+            font-size: 2.2rem;
+            font-weight: 900;
+            background: linear-gradient(45deg, #ff0000, #cc0000, #ff0000);
+            background-size: 200% 200%;
+            border: none;
+            border-radius: 20px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            box-shadow: 0 20px 40px rgba(255, 0, 0, 0.5);
+            animation: pulseRed 2s infinite alternate;
+        }
+        
+        @keyframes pulseRed {
+            from { box-shadow: 0 20px 40px rgba(255, 0, 0, 0.5); }
+            to { box-shadow: 0 20px 60px rgba(255, 0, 0, 0.8); }
+        }
+        
+        .spin-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.7s;
+        }
+        
+        .spin-btn:hover::before {
+            left: 100%;
+        }
+        
+        .spin-btn:hover {
+            transform: scale(1.1) rotate(-2deg);
+            box-shadow: 0 25px 50px rgba(255, 0, 0, 0.8);
+            background-position: 100% 50%;
+        }
+        
+        .spin-btn:disabled {
+            background: #444;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+            animation: none;
+        }
+        
+        .spin-btn:disabled:hover::before {
+            left: -100%;
+        }
+        
+        /* Информация об игре */
+        .game-info {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+            max-width: 1000px;
+            margin: 40px auto;
+        }
+        
+        .info-card {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 25px;
+            border-radius: 20px;
+            border: 3px solid #333;
+            text-align: center;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+        
+        .info-card:hover {
+            border-color: gold;
+            transform: translateY(-8px) scale(1.05);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+        }
+        
+        .info-title {
+            color: gold;
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .info-value {
+            font-size: 2.2rem;
+            font-weight: 900;
+            color: #fff;
+            text-shadow: 0 0 10px gold;
+        }
+        
+        .jackpot-info {
+            color: #ff3333;
+            font-size: 1.2rem;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        
+        /* Экран создателя */
+        #creator-screen {
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .creator-container {
+            text-align: center;
+            animation: slideUp 1s ease;
+        }
+        
+        @keyframes slideUp {
+            from { transform: translateY(100px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        .creator-title {
+            font-size: 4rem;
+            color: gold;
+            margin-bottom: 50px;
+            text-shadow: 0 0 30px rgba(255, 215, 0, 0.7);
+            letter-spacing: 3px;
+        }
+        
+        .creator-name {
+            font-size: 3.5rem;
+            color: white;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 50px 100px;
+            border-radius: 30px;
+            border: 5px solid gold;
+            margin-bottom: 50px;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.7);
+            position: relative;
+            overflow: hidden;
+            font-weight: 900;
+            letter-spacing: 2px;
+        }
+        
+        .creator-name::before {
+            content: '';
+            position: absolute;
+            top: -100%;
+            left: -100%;
+            width: 300%;
+            height: 300%;
+            background: linear-gradient(
+                45deg,
+                transparent 30%,
+                rgba(255, 215, 0, 0.15) 50%,
+                transparent 70%
+            );
+            animation: shine 6s infinite;
+        }
+        
+        .creator-quote {
+            color: #aaa;
+            font-size: 1.3rem;
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        
+        /* Кнопка выхода (только на игровом и creator экранах) */
+        .exit-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            padding: 15px 30px;
+            font-size: 1.3rem;
+            background: rgba(255, 0, 0, 0.9);
+            border: none;
+            border-radius: 15px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            box-shadow: 0 5px 20px rgba(255, 0, 0, 0.5);
+        }
+        
+        .exit-btn:hover {
+            background: rgba(255, 0, 0, 1);
+            transform: translateX(-5px) scale(1.05);
+            box-shadow: 0 10px 30px rgba(255, 0, 0, 0.7);
+        }
+        
+        /* Анимация вращения */
+        @keyframes spin {
+            0% { transform: rotateX(0); }
+            100% { transform: rotateX(720deg); }
+        }
+        
+        .spinning {
+            animation: spin 0.5s linear infinite;
+        }
+        
+        /* Модальное окно выигрыша */
+        .win-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            animation: fadeIn 0.4s;
+            backdrop-filter: blur(10px);
+        }
+        
+        .win-content {
+            background: linear-gradient(45deg, #1a1a2e, #0a0a0a);
+            padding: 60px;
+            border-radius: 40px;
+            border: 8px solid gold;
+            text-align: center;
+            max-width: 700px;
+            width: 90%;
+            box-shadow: 0 0 100px rgba(255, 215, 0, 0.7);
+            animation: popIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        @keyframes popIn {
+            0% { transform: scale(0.3) rotate(-180deg); opacity: 0; }
+            100% { transform: scale(1) rotate(0); opacity: 1; }
+        }
+        
+        .win-content::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,215,0,0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
+        
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .win-title {
+            font-size: 4rem;
+            color: gold;
+            margin-bottom: 40px;
+            text-shadow: 0 0 30px gold;
+            position: relative;
+            z-index: 2;
+            letter-spacing: 3px;
+        }
+        
+        .win-symbols {
+            font-size: 5rem;
+            margin: 40px 0;
+            letter-spacing: 30px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .win-amount {
+            font-size: 3.5rem;
+            color: #fff;
+            margin: 40px 0;
+            background: rgba(255, 215, 0, 0.15);
+            padding: 30px;
+            border-radius: 20px;
+            border: 4px solid gold;
+            position: relative;
+            z-index: 2;
+            font-weight: 900;
+            text-shadow: 0 0 20px gold;
+        }
+        
+        .close-win-btn {
+            padding: 25px 70px;
+            font-size: 1.8rem;
+            background: linear-gradient(45deg, gold, orange);
+            border: none;
+            border-radius: 20px;
+            color: #000;
+            cursor: pointer;
+            font-weight: 900;
+            transition: all 0.3s ease;
+            margin-top: 30px;
+            position: relative;
+            z-index: 2;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+        
+        .close-win-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 15px 40px rgba(255, 215, 0, 0.7);
+        }
+        
+        /* Модальное окно истории */
+        .history-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            animation: fadeIn 0.4s;
+            backdrop-filter: blur(10px);
+        }
+        
+        .history-content {
+            background: linear-gradient(45deg, #1a1a2e, #0a0a0a);
+            padding: 50px;
+            border-radius: 30px;
+            border: 5px solid #ff3333;
+            text-align: center;
+            max-width: 800px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 0 80px rgba(255, 0, 0, 0.5);
+            animation: slideInUp 0.5s;
+        }
+        
+        @keyframes slideInUp {
+            from { transform: translateY(100px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        .history-title {
+            font-size: 3rem;
+            color: #ff3333;
+            margin-bottom: 40px;
+            text-shadow: 0 0 20px #ff3333;
+            letter-spacing: 2px;
+        }
+        
+        .history-list {
+            text-align: left;
+            margin-top: 20px;
+        }
+        
+        .history-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 15px;
+            border-left: 5px solid #ff3333;
+            transition: all 0.3s ease;
+        }
+        
+        .history-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(10px);
+        }
+        
+        .history-item.win {
+            border-left-color: gold;
+        }
+        
+        .history-item.loss {
+            border-left-color: #666;
+        }
+        
+        .history-time {
+            color: #aaa;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+        
+        .history-symbols {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin: 10px 0;
+            letter-spacing: 15px;
+        }
+        
+        .history-result {
+            font-size: 1.3rem;
+            font-weight: bold;
+        }
+        
+        .history-result.win {
+            color: gold;
+        }
+        
+        .history-result.loss {
+            color: #aaa;
+        }
+        
+        .empty-history {
+            font-size: 1.5rem;
+            color: #666;
+            padding: 50px;
+            text-align: center;
+        }
+        
+        .close-history-btn {
+            padding: 20px 60px;
+            font-size: 1.5rem;
+            background: #ff3333;
+            border: none;
+            border-radius: 15px;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            margin-top: 40px;
+            letter-spacing: 2px;
+        }
+        
+        .close-history-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(255, 0, 0, 0.5);
+        }
+        
+        /* Анимация пополнения счета - СПРАВА В ЦЕНТРЕ */
+        @keyframes moneyAddRight {
+            0% { 
+                transform: translateX(0) translateY(-50%) scale(1); 
+                opacity: 1;
+                right: 120px;
+            }
+            50% {
+                opacity: 1;
+            }
+            100% { 
+                transform: translateX(-50px) translateY(-100px) scale(1.5); 
+                opacity: 0;
+                right: 170px;
+            }
+        }
+        
+        .money-effect-right {
+            position: fixed;
+            color: gold;
+            font-size: 2.5rem;
+            font-weight: 900;
+            pointer-events: none;
+            z-index: 1500;
+            animation: moneyAddRight 1.5s forwards;
+            text-shadow: 0 0 20px gold;
+            top: 50%;
+            right: 120px;
+            transform: translateY(-50%);
+        }
+        
+        /* Адаптивность */
+        @media (max-width: 1100px) {
+            .slot { width: 180px; height: 180px; }
+            .symbol { font-size: 6rem; }
+            .slots-container { gap: 30px; }
+        }
+        
+        @media (max-width: 900px) {
+            .game-info { grid-template-columns: repeat(2, 1fr); }
+            .money-effect-right {
+                right: 80px;
+                font-size: 2rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .logo h1 { font-size: 3.5rem; }
+            .menu-btn { padding: 20px; font-size: 1.5rem; }
+            .slot { width: 140px; height: 140px; }
+            .symbol { font-size: 5rem; }
+            .slots-container { gap: 20px; }
+            .spin-btn { padding: 25px 60px; font-size: 1.8rem; }
+            .game-info { grid-template-columns: 1fr; }
+            .creator-name { font-size: 2.5rem; padding: 30px; }
+            .info-card { padding: 20px; }
+            .money-effect-right {
+                right: 50px;
+                font-size: 1.8rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .slot { width: 100px; height: 100px; }
+            .symbol { font-size: 4rem; }
+            .slots-container { gap: 15px; }
+            .spin-btn { padding: 20px 40px; font-size: 1.5rem; }
+            .game-title { font-size: 2.5rem; }
+            .balance { padding: 10px 20px; }
+            .balance-amount { font-size: 1.5rem; }
+            .money-effect-right {
+                right: 30px;
+                font-size: 1.5rem;
+            }
+        }
+        
+        /* Инструкция */
+        .instructions {
+            position: fixed;
+            bottom: 20px;
+            width: 100%;
+            text-align: center;
+            color: #666;
+            font-size: 1rem;
+            padding: 0 20px;
+        }
+        
+        /* Конфиденциальность */
+        .privacy-note {
+            color: #666;
+            font-size: 0.9rem;
+            text-align: center;
+            margin-top: 30px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+    </style>
+</head>
+<body>
+    <!-- Анимированный фон -->
+    <div class="bg-animation"></div>
+    
+    <!-- Главное меню (БЕЗ КНОПКИ ВЫХОДА В ЛЕВОМ ВЕРХНЕМ УГЛУ) -->
+    <div id="main-menu" class="screen active">
+        <div class="balance">
+            <span class="balance-label">БАЛАНС:</span>
+            <span class="balance-amount" id="balance">100 000 ₽</span>
+        </div>
+        
+        <div class="logo">
+            <h1>LUCKY SLOTS</h1>
+            <p>ЭЛИТНОЕ ВИРТУАЛЬНОЕ КАЗИНО</p>
+        </div>
+        
+        <div class="menu-buttons">
+            <button class="menu-btn play-btn" id="play-btn">
+                🎰 ИГРАТЬ
+            </button>
+            <button class="menu-btn history-main-btn" id="main-history-btn">
+                📜 ИСТОРИЯ ИГР
+            </button>
+            <button class="menu-btn creator-btn" id="creator-btn">
+                👑 СОЗДАТЕЛЬ
+            </button>
+            <button class="menu-btn add-money-btn" id="add-money-btn">
+                💎 ПОПОЛНИТЬ СЧЕТ
+            </button>
+        </div>
+        
+        <div class="privacy-note">
+            Внимание: Это виртуальное казино использует игровую валюту. Все деньги являются фейковыми.
+        </div>
+        
+        <div class="instructions">
+            Для начала игры нажмите "ИГРАТЬ". Ставка: 1 000 ₽. Количество спинов не ограничено.
+        </div>
+    </div>
+    
+    <!-- Игровой экран (ЗДЕСЬ ЕСТЬ КНОПКА ВЫХОДА) -->
+    <div id="game-screen" class="screen">
+        <button class="exit-btn" id="exit-game-btn">
+            ← ГЛАВНОЕ МЕНЮ
+        </button>
+        
+        <div class="balance">
+            <span class="balance-label">БАЛАНС:</span>
+            <span class="balance-amount" id="game-balance">100 000 ₽</span>
+        </div>
+        
+        <div class="game-header">
+            <h1 class="game-title">АВТОМАТ УДАЧИ</h1>
+        </div>
+        
+        <div class="slot-machine">
+            <div class="slots-container">
+                <div class="slot" id="slot1">
+                    <div class="symbol banana">🍌</div>
+                </div>
+                <div class="slot" id="slot2">
+                    <div class="symbol apple">🍎</div>
+                </div>
+                <div class="slot" id="slot3">
+                    <div class="symbol pear">🍐</div>
+                </div>
+            </div>
+            
+            <div class="spin-section">
+                <button class="spin-btn" id="spin-btn">
+                    🎯 КРУТИТЬ СЛОТЫ!
+                </button>
+            </div>
+        </div>
+        
+        <div class="game-info">
+            <div class="info-card">
+                <div class="info-title">СТАВКА</div>
+                <div class="info-value">1 000 ₽</div>
+            </div>
+            <div class="info-card">
+                <div class="info-title">3 ОДИНАКОВЫХ</div>
+                <div class="info-value">25 000 ₽</div>
+            </div>
+            <div class="info-card">
+                <div class="info-title">ДЖЕКПОТ</div>
+                <div class="info-value">70 000 ₽</div>
+                <div class="jackpot-info">(7️⃣7️⃣7️⃣)</div>
+            </div>
+        </div>
+        
+        <div class="instructions">
+            СИМВОЛЫ: 🍌 - БАНАН | 🍎 - ЯБЛОКО | 🍐 - ГРУША | 7️⃣ - СЕМЕРКА (ДЖЕКПОТ)
+        </div>
+    </div>
+    
+    <!-- Экран создателя (ЗДЕСЬ ЕСТЬ КНОПКА ВЫХОДА) -->
+    <div id="creator-screen" class="screen">
+        <button class="exit-btn" id="exit-creator-btn">
+            ← ГЛАВНОЕ МЕНЮ
+        </button>
+        
+        <div class="creator-container">
+            <h1 class="creator-title">АВТОР ПРОЕКТА</h1>
+            <div class="creator-name">МАРК ДОРОНИН</div>
+            <p class="creator-quote">
+                "Эта игра была создана для развлекательных целей и демонстрирует возможности современного веб-дизайна. 
+                Все используемые в игре денежные средства являются виртуальными и не имеют реальной стоимости.
+                Помните, что ответственное отношение к азартным играм - залог здорового времяпровождения."
+            </p>
+        </div>
+        
+        <div class="instructions">
+            Проект создан в 2024 году. Все визуальные и программные решения защищены авторским правом.
+        </div>
+    </div>
+    
+    <!-- Модальное окно выигрыша -->
+    <div class="win-modal" id="win-modal">
+        <div class="win-content">
+            <h2 class="win-title" id="win-title">УДАЧА!</h2>
+            <div class="win-symbols" id="win-symbols">🍌 🍌 🍌</div>
+            <div class="win-amount" id="win-amount">+25 000 ₽</div>
+            <button class="close-win-btn" id="close-win-btn">ПРОДОЛЖИТЬ ИГРУ</button>
+        </div>
+    </div>
+    
+    <!-- Модальное окно истории -->
+    <div class="history-modal" id="history-modal">
+        <div class="history-content">
+            <h2 class="history-title">ИСТОРИЯ ИГР</h2>
+            <div class="history-list" id="history-list">
+                <!-- История будет добавляться сюда -->
+            </div>
+            <button class="close-history-btn" id="close-history-btn">ЗАКРЫТЬ</button>
+        </div>
+    </div>
+
+    <script>
+        // Игровые переменные
+        let balance = 100000;
+        let isSpinning = false;
+        const betAmount = 1000;
+        const normalWin = 25000;
+        const jackpotWin = 70000;
+        const winChance = 0.1; // 10% шанс выигрыша (ИЗМЕНЕНО С 1% НА 10%)
+        const jackpotChance = 0.01; // 1% шанс на джекпот (от выигрышей)
+        
+        // История игр
+        let gameHistory = [];
+        const maxHistoryItems = 15;
+        
+        // Символы (ЭМОДЗИ)
+        const symbols = [
+            { char: '🍌', name: 'БАНАН', class: 'banana' },
+            { char: '🍎', name: 'ЯБЛОКО', class: 'apple' },
+            { char: '🍐', name: 'ГРУША', class: 'pear' },
+            { char: '7️⃣', name: 'СЕМЕРКА', class: 'seven' }
+        ];
+        
+        // Элементы DOM
+        const mainMenu = document.getElementById('main-menu');
+        const gameScreen = document.getElementById('game-screen');
+        const creatorScreen = document.getElementById('creator-screen');
+        const winModal = document.getElementById('win-modal');
+        const historyModal = document.getElementById('history-modal');
+        
+        const balanceDisplay = document.getElementById('balance');
+        const gameBalanceDisplay = document.getElementById('game-balance');
+        
+        const slot1 = document.getElementById('slot1');
+        const slot2 = document.getElementById('slot2');
+        const slot3 = document.getElementById('slot3');
+        
+        const winTitle = document.getElementById('win-title');
+        const winSymbols = document.getElementById('win-symbols');
+        const winAmount = document.getElementById('win-amount');
+        
+        const historyList = document.getElementById('history-list');
+        
+        // Кнопки
+        const playBtn = document.getElementById('play-btn');
+        const mainHistoryBtn = document.getElementById('main-history-btn');
+        const creatorBtn = document.getElementById('creator-btn');
+        const addMoneyBtn = document.getElementById('add-money-btn');
+        const exitGameBtn = document.getElementById('exit-game-btn');
+        const exitCreatorBtn = document.getElementById('exit-creator-btn');
+        const spinBtn = document.getElementById('spin-btn');
+        const closeWinBtn = document.getElementById('close-win-btn');
+        const closeHistoryBtn = document.getElementById('close-history-btn');
+        
+        // Функция для обновления баланса
+        function updateBalance() {
+            const formatted = balance.toLocaleString('ru-RU') + ' ₽';
+            balanceDisplay.textContent = formatted;
+            gameBalanceDisplay.textContent = formatted;
+        }
+        
+        // Функция для показа экрана
+        function showScreen(screen) {
+            document.querySelectorAll('.screen').forEach(s => {
+                s.classList.remove('active');
+            });
+            screen.classList.add('active');
+        }
+        
+        // Функция для создания эффекта денег (СПРАВА В ЦЕНТРЕ)
+        function createMoneyEffectRight(amount, isWin = true) {
+            const effect = document.createElement('div');
+            effect.className = 'money-effect-right';
+            effect.textContent = `${isWin ? '+' : '-'}${amount} ₽`;
+            effect.style.color = isWin ? 'gold' : '#ff3333';
+            document.body.appendChild(effect);
+            
+            setTimeout(() => effect.remove(), 1500);
+        }
+        
+        // Функция для добавления записи в историю
+        function addToHistory(results, winAmount, isJackpot = false) {
+            const now = new Date();
+            const time = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}`;
+            
+            const historyItem = {
+                time: time,
+                symbols: results.map(r => symbols[r].char),
+                isWin: winAmount > 0,
+                amount: winAmount,
+                isJackpot: isJackpot,
+                bet: betAmount
+            };
+            
+            gameHistory.unshift(historyItem);
+            
+            // Ограничиваем историю последними 15 играми
+            if (gameHistory.length > maxHistoryItems) {
+                gameHistory = gameHistory.slice(0, maxHistoryItems);
+            }
+            
+            updateHistoryDisplay();
+        }
+        
+        // Функция для обновления отображения истории
+        function updateHistoryDisplay() {
+            historyList.innerHTML = '';
+            
+            if (gameHistory.length === 0) {
+                historyList.innerHTML = '<div class="empty-history">История игр пуста</div>';
+                return;
+            }
+            
+            gameHistory.forEach((item, index) => {
+                const historyItem = document.createElement('div');
+                historyItem.className = `history-item ${item.isWin ? 'win' : 'loss'}`;
+                
+                const symbolsStr = item.symbols.join(' ');
+                const resultText = item.isWin 
+                    ? `ВЫИГРЫШ: +${item.amount.toLocaleString('ru-RU')} ₽` 
+                    : `ПРОИГРЫШ: -${item.bet.toLocaleString('ru-RU')} ₽`;
+                
+                historyItem.innerHTML = `
+                    <div class="history-time">${item.time}</div>
+                    <div class="history-symbols">${symbolsStr}</div>
+                    <div class="history-result ${item.isWin ? 'win' : 'loss'}">
+                        ${resultText} ${item.isJackpot ? '🎰 ДЖЕКПОТ!' : ''}
+                    </div>
+                `;
+                
+                historyList.appendChild(historyItem);
+            });
+        }
+        
+        // Функция для вращения слотов
+        function spinSlots() {
+            if (isSpinning || balance < betAmount) {
+                if (balance < betAmount) {
+                    alert('💸 НЕДОСТАТОЧНО СРЕДСТВ!\nНажмите "ПОПОЛНИТЬ СЧЕТ" в главном меню.');
+                }
+                return;
+            }
+            
+            // Начинаем вращение
+            isSpinning = true;
+            spinBtn.disabled = true;
+            balance -= betAmount;
+            updateBalance();
+            
+            // Эффект списания денег (справа в центре)
+            createMoneyEffectRight(betAmount, false);
+            
+            // Анимация вращения
+            slot1.classList.add('spinning');
+            slot2.classList.add('spinning');
+            slot3.classList.add('spinning');
+            
+            // Убираем подсветку выигрыша
+            slot1.classList.remove('win');
+            slot2.classList.remove('win');
+            slot3.classList.remove('win');
+            
+            // Генерируем результат
+            setTimeout(() => {
+                let results = [];
+                const isWin = Math.random() < winChance; // 10% шанс
+                
+                if (isWin) {
+                    // Определяем тип выигрыша
+                    const isJackpot = Math.random() < jackpotChance; // 1% от выигрышей
+                    
+                    if (isJackpot) {
+                        // Джекпот - три семерки
+                        results = [3, 3, 3];
+                    } else {
+                        // Обычный выигрыш - три одинаковых символа
+                        const symbolIndex = Math.floor(Math.random() * 3); // 0-2 (🍌, 🍎, 🍐)
+                        results = [symbolIndex, symbolIndex, symbolIndex];
+                    }
+                } else {
+                    // Проигрыш - случайные символы
+                    do {
+                        results = [
+                            Math.floor(Math.random() * 4),
+                            Math.floor(Math.random() * 4),
+                            Math.floor(Math.random() * 4)
+                        ];
+                    } while (results[0] === results[1] && results[1] === results[2]);
+                }
+                
+                // Показываем результат
+                showResults(results);
+                
+                // Завершаем вращение
+                isSpinning = false;
+                spinBtn.disabled = false;
+            }, 1500);
+        }
+        
+        // Функция для показа результатов
+        function showResults(results) {
+            // Убираем анимацию вращения
+            slot1.classList.remove('spinning');
+            slot2.classList.remove('spinning');
+            slot3.classList.remove('spinning');
+            
+            // Обновляем символы (ЭМОДЗИ)
+            const symbol1 = symbols[results[0]];
+            const symbol2 = symbols[results[1]];
+            const symbol3 = symbols[results[2]];
+            
+            slot1.innerHTML = `<div class="symbol ${symbol1.class}">${symbol1.char}</div>`;
+            slot2.innerHTML = `<div class="symbol ${symbol2.class}">${symbol2.char}</div>`;
+            slot3.innerHTML = `<div class="symbol ${symbol3.class}">${symbol3.char}</div>`;
+            
+            // Проверяем выигрыш
+            const isWin = results[0] === results[1] && results[1] === results[2];
+            
+            if (isWin) {
+                // Подсвечиваем выигрышные слоты
+                slot1.classList.add('win');
+                slot2.classList.add('win');
+                slot3.classList.add('win');
+                
+                // Определяем сумму выигрыша
+                const isJackpot = results[0] === 3;
+                let winAmount = isJackpot ? jackpotWin : normalWin;
+                
+                // Добавляем выигрыш к балансу
+                balance += winAmount;
+                updateBalance();
+                
+                // Добавляем в историю
+                addToHistory(results, winAmount, isJackpot);
+                
+                // Показываем модальное окно выигрыша
+                showWinModal(results[0], winAmount, isJackpot);
+                
+                // Эффект добавления денег (справа в центре)
+                createMoneyEffectRight(winAmount, true);
+            } else {
+                // Проигрыш - добавляем в историю
+                addToHistory(results, 0, false);
+                
+                // Небольшая вибрация при проигрыше
+                document.body.style.transform = 'translateX(5px)';
+                setTimeout(() => {
+                    document.body.style.transform = 'translateX(-5px)';
+                    setTimeout(() => {
+                        document.body.style.transform = 'translateX(0)';
+                    }, 50);
+                }, 50);
+            }
+        }
+        
+        // Функция для показа модального окна выигрыша
+        function showWinModal(symbolIndex, amount, isJackpot = false) {
+            const symbol = symbols[symbolIndex];
+            
+            // Настраиваем заголовок
+            winTitle.textContent = isJackpot ? '🎰 ДЖЕКПОТ! 🎰' : '🎉 ПОБЕДА! 🎉';
+            winTitle.style.color = isJackpot ? 'gold' : 'gold';
+            
+            // Настраиваем символы (ЭМОДЗИ)
+            winSymbols.textContent = `${symbol.char} ${symbol.char} ${symbol.char}`;
+            winSymbols.className = `win-symbols ${symbol.class}`;
+            
+            // Настраиваем сумму
+            winAmount.textContent = `+${amount.toLocaleString('ru-RU')} ₽`;
+            
+            // Показываем модальное окно
+            winModal.style.display = 'flex';
+        }
+        
+        // Инициализация игры
+        function init() {
+            updateBalance();
+            updateHistoryDisplay();
+            
+            // Обработчики событий
+            playBtn.addEventListener('click', () => showScreen(gameScreen));
+            mainHistoryBtn.addEventListener('click', () => {
+                historyModal.style.display = 'flex';
+            });
+            creatorBtn.addEventListener('click', () => showScreen(creatorScreen));
+            
+            addMoneyBtn.addEventListener('click', () => {
+                balance += 1000;
+                updateBalance();
+                // Анимация пополнения счета СПРАВА В ЦЕНТРЕ
+                createMoneyEffectRight(1000, true);
+                
+                // Анимация кнопки
+                addMoneyBtn.textContent = '💎 +1 000 ₽';
+                setTimeout(() => {
+                    addMoneyBtn.textContent = '💎 ПОПОЛНИТЬ СЧЕТ';
+                }, 500);
+            });
+            
+            exitGameBtn.addEventListener('click', () => {
+                showScreen(mainMenu);
+                // Сбрасываем слоты
+                slot1.innerHTML = '<div class="symbol banana">🍌</div>';
+                slot2.innerHTML = '<div class="symbol apple">🍎</div>';
+                slot3.innerHTML = '<div class="symbol pear">🍐</div>';
+                slot1.classList.remove('win');
+                slot2.classList.remove('win');
+                slot3.classList.remove('win');
+            });
+            
+            exitCreatorBtn.addEventListener('click', () => showScreen(mainMenu));
+            spinBtn.addEventListener('click', spinSlots);
+            
+            closeWinBtn.addEventListener('click', () => {
+                winModal.style.display = 'none';
+                slot1.classList.remove('win');
+                slot2.classList.remove('win');
+                slot3.classList.remove('win');
+            });
+            
+            closeHistoryBtn.addEventListener('click', () => {
+                historyModal.style.display = 'none';
+            });
+            
+            // Закрытие модальных окон по клику на фон
+            winModal.addEventListener('click', (e) => {
+                if (e.target === winModal) {
+                    winModal.style.display = 'none';
+                }
+            });
+            
+            historyModal.addEventListener('click', (e) => {
+                if (e.target === historyModal) {
+                    historyModal.style.display = 'none';
+                }
+            });
+            
+            // Анимация при загрузке
+            setTimeout(() => {
+                document.querySelectorAll('.screen').forEach(s => {
+                    s.style.opacity = '1';
+                });
+            }, 100);
+            
+            // Добавляем начальную запись в историю
+            addToHistory([0, 1, 2], 0, false);
+        }
+        
+        // Запускаем игру при загрузке
+        window.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
