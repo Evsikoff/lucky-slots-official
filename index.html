@@ -567,12 +567,18 @@
             cursor: pointer;
             transition: all 0.3s ease;
             z-index: 1000;
-            display: flex;
+            display: none; /* Скрыта по умолчанию */
             align-items: center;
             gap: 10px;
             font-weight: bold;
             letter-spacing: 1px;
             box-shadow: 0 5px 20px rgba(255, 0, 0, 0.5);
+        }
+
+        /* Показываем кнопку ТОЛЬКО на активных игровом экране и экране создателя */
+        #game-screen.active .exit-btn,
+        #creator-screen.active .exit-btn {
+            display: flex;
         }
         
         .exit-btn:hover {
